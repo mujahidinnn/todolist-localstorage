@@ -52,6 +52,8 @@ const Home = () => {
       "blogs",
       JSON.stringify([..._blogs, { tanggallengkap, jamlengkap, title, desc }])
     );
+    setTitle("");
+    setDesc("");
   };
 
   // Get
@@ -126,9 +128,8 @@ const Home = () => {
     console.log(_blogs);
     localStorage.setItem("blogs", JSON.stringify(_blogs));
 
-    const GetValueTitle = (e) => {
-      e.target.value;
-    };
+    setTitle("");
+    setDesc("");
   };
 
   return (
