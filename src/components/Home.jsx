@@ -82,15 +82,54 @@ const Home = () => {
   };
 
   // Edit
-  const [titleEdit, setTitleEdit] = useState("");
-  const [descEdit, setDescEdit] = useState("");
-
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const handleOpenModalEdit = () => setOpenModalEdit(true);
   const handleCloseModalEdit = () => setOpenModalEdit(false);
 
+  const handleSelectId = (id) => {
+    localStorage.setItem("editId", id);
+    console.log(id);
+  };
+
   const handleEdit = (id) => {
-    
+    //Get Time
+    let tanggallengkap = new String();
+    let jamlengkap = new String();
+    let namahari = "Minggu Senin Selasa Rabu Kamis Jumat Sabtu";
+    namahari = namahari.split(" ");
+    let namabulan =
+      "Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember";
+    namabulan = namabulan.split(" ");
+    let tgl = new Date();
+    let hari = tgl.getDay();
+    let tanggal = tgl.getDate();
+    let bulan = tgl.getMonth();
+    let tahun = tgl.getFullYear();
+    let jam = tgl.getHours();
+    let menit = tgl.getMinutes();
+    tanggallengkap = `${namahari[hari]}, ${tanggal} ${namabulan[bulan]} ${tahun}`;
+    jamlengkap = `${jam}:${menit}`;
+
+    const theId =
+      localStorage.getItem("editId") &&
+      localStorage.getItem("editId").length > 0
+        ? JSON.parse(localStorage.getItem("editId"))
+        : [];
+    console.log("ini the Id " + theId);
+
+    const _blogs = blogs.map((blog, idIn) => {
+      if (idIn == localStorage.getItem("editId")) {
+        return { title, desc, tanggallengkap, jamlengkap };
+      } else {
+        return blog;
+      }
+    });
+    console.log(_blogs);
+    localStorage.setItem("blogs", JSON.stringify(_blogs));
+
+    const GetValueTitle = (e) => {
+      e.target.value
+    }
   };
 
   return (
@@ -228,7 +267,9 @@ const Home = () => {
                       variant="outlined"
                       color="success"
                       startIcon={<EditIcon />}
-                      onClick={() => handleOpenModalEdit()}
+                      onClick={() => {
+                        handleOpenModalEdit(), handleSelectId(id);
+                      }}
                     >
                       Edit
                     </Button>
@@ -263,8 +304,8 @@ const Home = () => {
                         <hr color="#ccc" />
                         <br />
                         <TextField
-                          // value={title}
-                          // onChange={}
+                          value={title}
+                          onChange={(e) => setTitle(e.target.value)}
                           label="Title"
                           variant="standard"
                           type="text"
@@ -272,8 +313,8 @@ const Home = () => {
                         />
                         <br />
                         <TextField
-                          // value={desc}
-                          // onChange={}
+                          value={desc}
+                          onChange={(e) => setDesc(e.target.value)}
                           label="Description"
                           variant="standard"
                           type="text"
