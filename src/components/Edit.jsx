@@ -23,23 +23,22 @@ const Edit = () => {
     // console.log({ title, desc, index: localStorage.getItem("editId") });
 
     //Get Time
-    var tanggallengkap = new String();
-    var jamlengkap = new String();
-    var namahari = "Minggu Senin Selasa Rabu Kamis Jumat Sabtu";
+    let tanggallengkap = new String();
+    let jamlengkap = new String();
+    let namahari = "Minggu Senin Selasa Rabu Kamis Jumat Sabtu";
     namahari = namahari.split(" ");
-    var namabulan =
+    let namabulan =
       "Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember";
     namabulan = namabulan.split(" ");
-    var tgl = new Date();
-    var hari = tgl.getDay();
-    var tanggal = tgl.getDate();
-    var bulan = tgl.getMonth();
-    var tahun = tgl.getFullYear();
-    var jam = tgl.getHours();
-    var menit = tgl.getMinutes();
-    tanggallengkap =
-      namahari[hari] + ", " + tanggal + " " + namabulan[bulan] + " " + tahun;
-    jamlengkap = jam + ":" + menit;
+    let tgl = new Date();
+    let hari = tgl.getDay();
+    let tanggal = tgl.getDate();
+    let bulan = tgl.getMonth();
+    let tahun = tgl.getFullYear();
+    let jam = tgl.getHours();
+    let menit = tgl.getMinutes();
+    tanggallengkap = `${namahari[hari]}, ${tanggal} ${namabulan[bulan]} ${tahun}`;
+    jamlengkap = `${jam}:${menit}`;
     //   Get Time
 
     const blogs =
