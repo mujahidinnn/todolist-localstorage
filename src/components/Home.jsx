@@ -44,24 +44,24 @@ const Home = () => {
     tanggallengkap = `${namahari[hari]}, ${tanggal} ${namabulan[bulan]} ${tahun}`;
     jamlengkap = `${jam}:${menit}`;
 
-    const _blogs =
-      localStorage.getItem("blogs") && localStorage.getItem("blogs").length > 0
-        ? JSON.parse(localStorage.getItem("blogs"))
+    const _todolist =
+      localStorage.getItem("todolist") && localStorage.getItem("todolist").length > 0
+        ? JSON.parse(localStorage.getItem("todolist"))
         : [];
     localStorage.setItem(
-      "blogs",
-      JSON.stringify([..._blogs, { tanggallengkap, jamlengkap, title, desc }])
+      "todolist",
+      JSON.stringify([..._todolist, { tanggallengkap, jamlengkap, title, desc }])
     );
     setTitle("");
     setDesc("");
   };
 
   // Get
-  const [blogs, setBlogs] = useState([]);
+  const [todolist, setTodolist] = useState([]);
 
   const handleGet = () => {
-    const blogs = localStorage.getItem("blogs");
-    setBlogs(JSON.parse(blogs));
+    const todolist = localStorage.getItem("todolist");
+    setTodolist(JSON.parse(todolist));
   };
   useEffect(() => {
     handleGet();
@@ -73,13 +73,13 @@ const Home = () => {
   const handleCloseModalDelete = () => setOpenModalDelete(false);
 
   const handleDelete = (idOut) => {
-    const _blogs = blogs.filter((blog, idIn) => {
+    const _todolist = todolist.filter((blog, idIn) => {
       if (idIn !== idOut) {
         return blog;
       }
     });
-    setBlogs(_blogs);
-    localStorage.setItem("blogs", JSON.stringify(_blogs));
+    setTodolist(_todolist);
+    localStorage.setItem("todolist", JSON.stringify(_todolist));
   };
 
   // Edit
@@ -118,15 +118,16 @@ const Home = () => {
         : [];
     console.log("ini the Id " + theId);
 
-    const _blogs = blogs.map((blog, idIn) => {
+    const _todolist = todolist.map((blog, idIn) => {
       if (idIn == localStorage.getItem("editId")) {
         return { title, desc, tanggallengkap, jamlengkap };
       } else {
         return blog;
       }
     });
-    console.log(_blogs);
-    localStorage.setItem("blogs", JSON.stringify(_blogs));
+    // console.log(_todolist);
+
+    localStorage.setItem("todolist", JSON.stringify(_todolist));
 
     setTitle("");
     setDesc("");
@@ -142,7 +143,7 @@ const Home = () => {
           variant="contained"
           startIcon={<AddIcon />}
         >
-          Add
+          Add your todo
         </Button>
         <Modal
           open={openModalAdd}
@@ -165,7 +166,7 @@ const Home = () => {
             }}
           >
             <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
-              Add Blog
+              Add Todolist
             </Typography>
             <Typography
               sx={{
@@ -215,227 +216,244 @@ const Home = () => {
       {/* Modal Add */}
 
       <br />
+
       {/* Card Blog */}
-      {blogs && blogs.length > 0
-        ? blogs.map((blog, id) => {
-            return (
-              <div key={id}>
-                <Card sx={{ minWidth: 275, maxWidth: 340, margin: 2 }}>
-                  <CardContent>
-                    <CardContent
-                      sx={{
-                        display: "flex",
-                        margin: 0,
-                        padding: 0,
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Typography
-                        sx={{ fontSize: 14 }}
-                        color="text.secondary"
-                        gutterBottom
+      <div
+        style={{
+          display: "grid",
+          gap: "1rem",
+          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 450px))",
+          placeItems:"center"
+        }}
+      >
+        {todolist && todolist.length > 0
+          ? todolist.map((blog, id) => {
+              return (
+                <div key={id}>
+                  <Card sx={{ minWidth: 275, maxWidth: 450, margin: 2 }}>
+                    <CardContent>
+                      <CardContent
+                        sx={{
+                          display: "flex",
+                          margin: 0,
+                          padding: 0,
+                          justifyContent: "space-between",
+                        }}
                       >
-                        {blog?.tanggallengkap}
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          {blog?.tanggallengkap}
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: 14 }}
+                          color="text.secondary"
+                          gutterBottom
+                        >
+                          {blog?.jamlengkap}
+                        </Typography>
+                      </CardContent>
+                      <hr />
+                      <Typography
+                        variant="h5"
+                        component="div"
+                        noWrap
+                        sx={{ textTransform: "capitalize" }}
+                      >
+                        {blog?.title}
                       </Typography>
                       <Typography
-                        sx={{ fontSize: 14 }}
+                        sx={{ mb: 1.5, textTransform: "capitalize" }}
                         color="text.secondary"
-                        gutterBottom
                       >
-                        {blog?.jamlengkap}
+                        {blog?.desc}
                       </Typography>
                     </CardContent>
-                    <hr />
-                    <Typography
-                      variant="h5"
-                      component="div"
-                      noWrap
-                      sx={{ textTransform: "capitalize" }}
-                    >
-                      {blog?.title}
-                    </Typography>
-                    <Typography
-                      sx={{ mb: 1.5, textTransform: "capitalize" }}
-                      color="text.secondary"
-                    >
-                      {blog?.desc}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    {/* Modal Edit */}
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      startIcon={<EditIcon />}
-                      onClick={() => {
-                        handleOpenModalEdit(), handleSelectId(id);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Modal
-                      open={openModalEdit}
-                      onClose={handleCloseModalEdit}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          maxWidth: 300,
-                          minWidth: 280,
-                          bgcolor: "background.paper",
-                          boxShadow: 24,
-                          p: 4,
-                          borderRadius: "10px",
+                    <CardActions>
+                      {/* Modal Edit */}
+                      <Button
+                        variant="outlined"
+                        color="success"
+                        startIcon={<EditIcon />}
+                        onClick={() => {
+                          handleOpenModalEdit(),
+                            handleSelectId(id),
+                            setTitle(title),
+                            setDesc(desc);
                         }}
                       >
-                        <Typography
-                          id="modal-modal-title"
-                          variant="h5"
-                          component="h2"
-                          color="green"
-                        >
-                          Edit Blog
-                        </Typography>
-                        <hr color="#ccc" />
-                        <br />
-                        <TextField
-                          value={title}
-                          onChange={(e) => setTitle(e.target.value)}
-                          label="Title"
-                          variant="standard"
-                          type="text"
-                          sx={{ width: "100%" }}
-                        />
-                        <br />
-                        <TextField
-                          value={desc}
-                          onChange={(e) => setDesc(e.target.value)}
-                          label="Description"
-                          variant="standard"
-                          type="text"
-                          sx={{ width: "100%" }}
-                        />
-                        <br />
-                        <br />
-                        <CardActions
-                          sx={{
-                            display: "flex",
-                            gap: 6,
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={() => {
-                              handleCloseModalEdit(), handleGet();
-                            }}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="success"
-                            onClick={() => {
-                              handleEdit(id),
-                                handleCloseModalEdit(),
-                                handleGet();
-                            }}
-                          >
-                            Edit
-                          </Button>
-                        </CardActions>
-                      </Box>
-                    </Modal>
-
-                    {/*  */}
-
-                    {/* Modal Edit */}
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<DeleteIcon />}
-                      onClick={handleOpenModalDelete}
-                    >
-                      Delete
-                    </Button>
-                    {/* Modal Delete */}
-                    <Modal
-                      open={openModalDelete}
-                      onClose={handleCloseModalDelete}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          maxWidth: 300,
-                          minWidth: 280,
-                          bgcolor: "background.paper",
-                          boxShadow: 24,
-                          p: 4,
-                          borderRadius: "10px",
-                          textAlign: "center",
-                        }}
+                        Edit
+                      </Button>
+                      <Modal
+                        open={openModalEdit}
+                        onClose={handleCloseModalEdit}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
                       >
-                        <Typography
-                          id="modal-modal-title"
-                          variant="h5"
-                          component="h2"
-                          color="red"
-                        >
-                          Delete Blog
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                          Are you sure delete this blog?
-                        </Typography>
-                        <br />
-                        <CardActions
+                        <Box
                           sx={{
-                            display: "flex",
-                            gap: 6,
-                            justifyContent: "center",
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            maxWidth: 300,
+                            minWidth: 280,
+                            bgcolor: "background.paper",
+                            boxShadow: 24,
+                            p: 4,
+                            borderRadius: "10px",
                           }}
                         >
-                          <Button
-                            variant="outlined"
-                            color="success"
-                            onClick={() => {
-                              handleCloseModalDelete(), handleGet();
+                          <Typography
+                            id="modal-modal-title"
+                            variant="h5"
+                            component="h2"
+                            color="green"
+                          >
+                            Edit Todolist
+                          </Typography>
+                          <hr color="#ccc" />
+                          <br />
+                          <TextField
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            label="Title"
+                            variant="standard"
+                            type="text"
+                            sx={{ width: "100%" }}
+                          />
+                          <br />
+                          <TextField
+                            value={desc}
+                            onChange={(e) => setDesc(e.target.value)}
+                            label="Description"
+                            variant="standard"
+                            type="text"
+                            sx={{ width: "100%" }}
+                          />
+                          <br />
+                          <br />
+                          <CardActions
+                            sx={{
+                              display: "flex",
+                              gap: 6,
+                              justifyContent: "center",
                             }}
                           >
-                            Cancel
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={() => {
-                              handleDelete(id),
-                                handleCloseModalDelete(),
-                                handleGet();
+                            <Button
+                              variant="outlined"
+                              color="error"
+                              onClick={() => {
+                                handleCloseModalEdit(), handleGet();
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="success"
+                              onClick={() => {
+                                handleEdit(id),
+                                  handleCloseModalEdit(),
+                                  handleGet();
+                              }}
+                            >
+                              Edit
+                            </Button>
+                          </CardActions>
+                        </Box>
+                      </Modal>
+
+                      {/*  */}
+
+                      {/* Modal Edit */}
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        startIcon={<DeleteIcon />}
+                        onClick={handleOpenModalDelete}
+                      >
+                        Delete
+                      </Button>
+                      {/* Modal Delete */}
+                      <Modal
+                        open={openModalDelete}
+                        onClose={handleCloseModalDelete}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                      >
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            maxWidth: 300,
+                            minWidth: 280,
+                            bgcolor: "background.paper",
+                            boxShadow: 24,
+                            p: 4,
+                            borderRadius: "10px",
+                            textAlign: "center",
+                          }}
+                        >
+                          <Typography
+                            id="modal-modal-title"
+                            variant="h5"
+                            component="h2"
+                            color="red"
+                          >
+                            Delete Todolist
+                          </Typography>
+                          <Typography
+                            id="modal-modal-description"
+                            sx={{ mt: 2 }}
+                          >
+                            Are you sure delete this todolist?
+                          </Typography>
+                          <br />
+                          <CardActions
+                            sx={{
+                              display: "flex",
+                              gap: 6,
+                              justifyContent: "center",
                             }}
                           >
-                            Delete
-                          </Button>
-                        </CardActions>
-                      </Box>
-                    </Modal>
-                    {/* Modal Delete */}
-                    {/* </Button> */}
-                  </CardActions>
-                </Card>
-              </div>
-            );
-          })
-        : "Data not found"}
+                            <Button
+                              variant="outlined"
+                              color="success"
+                              onClick={() => {
+                                handleCloseModalDelete(), handleGet();
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              color="error"
+                              onClick={() => {
+                                handleDelete(id),
+                                  handleCloseModalDelete(),
+                                  handleGet();
+                              }}
+                            >
+                              Delete
+                            </Button>
+                          </CardActions>
+                        </Box>
+                      </Modal>
+                      {/* Modal Delete */}
+                      {/* </Button> */}
+                    </CardActions>
+                  </Card>
+                </div>
+              );
+            })
+          : "Data not found"}
+      </div>
+      {/* jadjbjdabjdbjabj */}
     </>
   );
 };
